@@ -354,11 +354,13 @@ open class Player: UIViewController {
             }
         }
     }
-    internal lazy var _avplayer: AVPlayer = {
+    
+    internal lazy var defaultPlayer: AVPlayer = {
         let avplayer = AVPlayer()
         avplayer.actionAtItemEnd = .pause
         return avplayer
     }()
+    internal var _avplayer: AVPlayer!
     internal var _playerItem: AVPlayerItem?
 
     internal var _playerObservers = [NSKeyValueObservation]()
@@ -378,6 +380,11 @@ open class Player: UIViewController {
 
     public convenience init() {
         self.init(nibName: nil, bundle: nil)
+    }
+    
+    public convenience init(player: AVPlayer) {
+        self.init(nibName: nil, bundle: nil)
+        self._avplayer = player
     }
 
     public required init?(coder aDecoder: NSCoder) {
@@ -413,8 +420,11 @@ open class Player: UIViewController {
 
     open override func viewDidLoad() {
         super.viewDidLoad()
+        if _avplayer == nil {
+            self._avplayer = self.defaultPlayer
+        }
         self._playerView.player = self._avplayer
-
+        
         if let url = self.url {
             setup(url: url)
         } else if let asset = self.asset {
@@ -529,6 +539,12 @@ extension Player {
         self._avplayer.pause()
         self.playbackState = .stopped
         self.playbackDelegate?.playerPlaybackDidEnd(self)
+    }
+    
+    open func playNextItemIfPossible() {
+        let player = _avplayer as? AVQueuePlayer
+        player?.advanceToNextItem()
+        self._playerItem = player?.currentItem
     }
 
     /// Updates playback to the specified time.
