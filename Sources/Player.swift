@@ -360,7 +360,14 @@ open class Player: UIViewController {
         avplayer.actionAtItemEnd = .pause
         return avplayer
     }()
-    internal var _avplayer: AVPlayer!
+    internal var _avplayer: AVPlayer! {
+        didSet {
+            if let queuePlayer = _avplayer as? AVQueuePlayer,
+                      let first = queuePlayer.items().first?.asset {
+                setupAsset(first)
+            }
+        }
+    }
     internal var _playerItem: AVPlayerItem?
 
     internal var _playerObservers = [NSKeyValueObservation]()
@@ -429,10 +436,6 @@ open class Player: UIViewController {
             setup(url: url)
         } else if let asset = self.asset {
             setupAsset(asset)
-        } else if let queuePlayer = self._avplayer as? AVQueuePlayer,
-                  let first = queuePlayer.items().first?.asset {
-            // Load first asset
-            setupAsset(first)
         }
         
         self.addPlayerLayerObservers()
