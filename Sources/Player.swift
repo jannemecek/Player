@@ -651,7 +651,7 @@ extension Player {
     }
 
     fileprivate func setupAsset(_ asset: AVAsset, loadableKeys: [String] = ["tracks", "playable", "duration"]) {
-        guard isViewLoaded else { return }
+//        guard isViewLoaded else { return }
 
         if self.playbackState == .playing {
             self.pause()
