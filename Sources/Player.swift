@@ -429,8 +429,12 @@ open class Player: UIViewController {
             setup(url: url)
         } else if let asset = self.asset {
             setupAsset(asset)
+        } else if let queuePlayer = self._avplayer as? AVQueuePlayer,
+                  let first = queuePlayer.items().first?.asset {
+            // Load first asset
+            setupAsset(first)
         }
-
+        
         self.addPlayerLayerObservers()
         self.addPlayerObservers()
         self.addApplicationObservers()
