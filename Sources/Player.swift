@@ -74,7 +74,7 @@ public protocol PlayerPlaybackDelegate: AnyObject {
 }
 
 // MARK: - Player
-
+// swiftlint:disable force_cast
 /// ▶️ Player, simple way to play and stream media
 open class Player: UIViewController {
 
@@ -436,6 +436,9 @@ open class Player: UIViewController {
             setup(url: url)
         } else if let asset = self.asset {
             setupAsset(asset)
+        } else if let player = self._avplayer as? AVQueuePlayer,
+                  let item = player.items().first {
+            setupPlayerItem(item)
         }
         
         self.addPlayerLayerObservers()
@@ -651,7 +654,7 @@ extension Player {
     }
 
     fileprivate func setupAsset(_ asset: AVAsset, loadableKeys: [String] = ["tracks", "playable", "duration"]) {
-//        guard isViewLoaded else { return }
+        guard isViewLoaded else { return }
 
         if self.playbackState == .playing {
             self.pause()
