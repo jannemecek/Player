@@ -554,9 +554,9 @@ extension Player {
     }
     
     open func playNextItemIfPossible() {
-        let player = _avplayer as? AVQueuePlayer
-        player?.advanceToNextItem()
-        self._playerItem = player?.currentItem
+        guard let player = _avplayer as? AVQueuePlayer else { return }
+        player.advanceToNextItem()
+        self.setupPlayerItem(player.currentItem)
     }
 
     /// Updates playback to the specified time.
@@ -970,7 +970,7 @@ public class PlayerView: UIView {
 
     // MARK: - internal properties
 
-    internal var playerLayer: AVPlayerLayer {
+    public var playerLayer: AVPlayerLayer {
         get {
             return self.layer as! AVPlayerLayer
         }
