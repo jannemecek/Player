@@ -205,6 +205,8 @@ open class Player: UIViewController {
     /// Pauses playback automatically when backgrounded.
     open var playbackPausesWhenBackgrounded: Bool = true
 
+    open var playbackPausesOnDisappear: Bool = true
+
     /// Resumes playback when became active.
     open var playbackResumesWhenBecameActive: Bool = true
 
@@ -448,7 +450,7 @@ open class Player: UIViewController {
 
     open override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        if self.playbackState == .playing {
+        if self.playbackState == .playing && self.playbackPausesOnDisappear {
             self.pause()
         }
     }
